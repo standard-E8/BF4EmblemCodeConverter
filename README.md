@@ -1,0 +1,2 @@
+# BF4EmblemCodeConverter
+BF4のエンブレムコードをBF1用に変換
