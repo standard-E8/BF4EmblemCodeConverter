@@ -1,0 +1,43 @@
+<!doctype html>
+<html ng-app="myApp">
+<head>
+  <title>BF4 emblem code for BF1</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
+  <script>
+    var app = angular.module("myApp", []);
+    app.controller("myController", function() {
+      this.onConbert = function() {
+        // 改行・空白を削除
+        var bf4code=this.inputcode.replace(/\r?\n|\ /g,"");
+        // BF1用に整形
+        bf4code=bf4code.replace(/emblem.emblem.load\(\{\"objects\"\:|\}\)\;$/g,"");
+        bf1code='var request=new XMLHttpRequest;request.open("POST","https://companion-api.battlefield.com/jsonrpc/web/api?Emblems.newPrivateEmblem",!0),request.onreadystatechange=function(){if(request.readyState==XMLHttpRequest.DONE){var e=JSON.parse(request.responseText);e.result?window.location.href=window.location.href.replace("/new","/edit/")+e.result.slot:alert("Error")}},request.setRequestHeader("Content-Type","application/json;charset=UTF-8"),request.setRequestHeader("X-GatewaySession",localStorage.gatewaySessionId),data={jsonrpc:"2.0",method:"Emblems.newPrivateEmblem",params:{data:\''+bf4code+'\'},id:"00000000-0000-0000-0000-000000000000"},request.send(JSON.stringify(data));';
+        this.outputcode=bf1code;
+      };
+    });
+  </script>
+</head>
+<body ng-controller="myController as myCtrl">
+  <h1>BF4 emblem code for BF1</h1>
+  <div>
+   <div>
+     <H2>Input Code</H2>
+     <textarea type="text" ng-model="myCtrl.inputcode" style="width: 500px; height: 150px;"></textarea>
+   </div>
+   <button ng-click="myCtrl.onConbert()">Convert</button><br>
+   <div>
+     <H2>Output Code</H2>
+     <textarea type="text" ng-model="myCtrl.outputcode" style="width: 500px; height: 150px;"></textarea>
+   </div>
+   <br><br>
+   <div>
+     <h2>Get emblems code</h2>
+     <h3>BF4</h3>
+     <p>copy('emblem.emblem.load('+JSON.stringify(emblem.emblem.data,null,2)+');');</p>
+     <h3>BF1</h3>
+     <p>var request=new XMLHttpRequest;request.open("POST","https://companion-api.battlefield.com/jsonrpc/web/api?Emblems.fetchPrivateEmblem",!0),request.onreadystatechange=function(){if(request.readyState==XMLHttpRequest.DONE){var e=JSON.parse(request.responseText);e.result?copy('emblem.emblem.load({"objects": '+e.result+"})"):alert("Error")}},request.setRequestHeader("Content-Type","application/json;charset=UTF-8"),request.setRequestHeader("X-GatewaySession",localStorage.gatewaySessionId);var user=JSON.parse(sessionStorage.bfScWidgetUserData);data={jsonrpc:"2.0",method:"Emblems.fetchPrivateEmblem",params:{personaId:user.personaId,platform:user.platform,slot:window.location.href.split("/").pop()},id:"00000000-0000-0000-0000-000000000000"},request.send(JSON.stringify(data));</p>
+   </div>
+ </div>
+ <hr><pre>{{myCtrl|json}}</pre><hr>
+</body>
+</html>
